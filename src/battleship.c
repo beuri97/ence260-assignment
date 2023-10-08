@@ -9,15 +9,15 @@
 
 
 
-// uint8_t ship_initialise_start_point(uint8_t* col, uint8_t ship) {
+uint8_t ship_initialise_start_point(uint8_t* col, uint8_t ship) {
 
-// }
+}
 
 
 /**
     Bitmap to display battleship postion to matrix-LED
 */ 
-uint8_t ship_position[5] = {0x00, 0x00, 0x00, 0x00, 0x00};
+uint8_t ship_position[5] = {0x07, 0x33, 0x17, 0x00, 0x00};
 
 
 bool collision_check(size_t col, uint8_t target) {
@@ -75,7 +75,7 @@ void ship_init(void) {
         size_t col = 4;
         bool done = 0;
         // need to prevent ship's collision at the beginning of initialisation
-        uint8_t unit = col;//ship_initialise_start_point(&col, SHIP[i]);
+        uint8_t unit = ship_initialise_start_point(&col, SHIP[i]);
         ship_position[col] |= unit;
 
         size_t led_col = 0;
@@ -83,6 +83,7 @@ void ship_init(void) {
             pacer_wait();
             done = ship_positioning(unit, col, SHIP[i]);
             ledmat_display_column(ship_position[led_col], led_col);
+            (led_col==LEDMAT_COLS_NUM-1) ? led_col = 0 : led_col++;
         }
     }
 

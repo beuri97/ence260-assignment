@@ -3,6 +3,7 @@
 #include <stdbool.h>
 
 
+
 #define LARGE 0b1111
 #define MEDIUM 0b111
 #define SMALL 0b11
