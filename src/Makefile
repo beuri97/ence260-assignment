@@ -10,22 +10,23 @@ OBJCOPY = avr-objcopy
 SIZE = avr-size
 DEL = rm
 
-
 # Default target.
 all: game.out
 
 
 # Compile: create object files from C source files.
-game.o: game.c ../../drivers/avr/system.h
+game.o: game.c ../../drivers/avr/system.h battleship.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
+battleship.o: battleship.c ../../drivers/avr/system.h ../../drivers/ledmat.h ../../drivers/navswitch.h ../../utils/pacer.h battleship.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 system.o: ../../drivers/avr/system.c ../../drivers/avr/system.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 
-
 # Link: create ELF output file from object files.
-game.out: game.o system.o
+game.out: game.o system.o battleship.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 
