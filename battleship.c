@@ -5,6 +5,7 @@
 #include "navswitch.h"
 #include "pacer.h"
 #include "system.h"
+#include "display.h"
 
 
 /**
@@ -21,7 +22,7 @@ uint8_t ship_initialise_start_point(uint8_t* col, uint8_t ship) {
         if((ship<<(shift))&(1<<(7))) {
             *col--;
             ship >>= shift;
-            //reset shift
+            //reset shiftship_init();
             shift = 0;
         } else if(ship_position[*col] & ship) {
             ship <<= ++shift;
@@ -86,6 +87,8 @@ bool ship_positioning(uint8_t ship, size_t col, size_t size) {
 void ship_init(void) {
 
     pacer_init(500);
+    ledmat_init();
+
     for(size_t i=0; i<3; i++){
         size_t col = 4;
         bool done = 0;
@@ -96,9 +99,10 @@ void ship_init(void) {
         size_t led_col = 0;
         while(!done){
             pacer_wait();
+            display_update();
             done = ship_positioning(unit, col, SHIP[i]);
             ledmat_display_column(ship_position[led_col], led_col);
-            (led_col == LEDMAT_COLS_NUM-1) ? led_col = 0 : led_col++;
+            (led_col > LEDMAT_COLS_NUM-1) ? led_col = 0 : led_col++;
         }
     }
 
