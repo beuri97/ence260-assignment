@@ -7,17 +7,32 @@
 #include "system.h"
 
 
+/**
+    Bitmap to display battleship postion to matrix-LED
+*/ 
+static uint8_t ship_position[5] = {0x00, 0x00, 0x00, 0x00, 0x00};
 
 
 uint8_t ship_initialise_start_point(uint8_t* col, uint8_t ship) {
 
+    char shift = 0;
+    while(1) {
+        //shift back and move to next column
+        if((ship<<(shift))&(1<<(7))) {
+            *col--;
+            ship >>= shift;
+            //reset shift
+            shift = 0;
+        } else if(ship_position[*col] & ship) {
+            ship <<= ++shift;
+        } else {
+            break;
+        }
+    }
+
+    return ship;
+
 }
-
-
-/**
-    Bitmap to display battleship postion to matrix-LED
-*/ 
-uint8_t ship_position[5] = {0x07, 0x33, 0x17, 0x00, 0x00};
 
 
 bool collision_check(size_t col, uint8_t target) {
@@ -83,7 +98,7 @@ void ship_init(void) {
             pacer_wait();
             done = ship_positioning(unit, col, SHIP[i]);
             ledmat_display_column(ship_position[led_col], led_col);
-            (led_col==LEDMAT_COLS_NUM-1) ? led_col = 0 : led_col++;
+            (led_col == LEDMAT_COLS_NUM-1) ? led_col = 0 : led_col++;
         }
     }
 
