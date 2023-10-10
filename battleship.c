@@ -11,6 +11,15 @@
 */ 
 static uint8_t ship_position[5] = {0x00, 0x00, 0x00, 0x00, 0x00};
 
+
+void draw_field(uint8_t col)
+{
+    for (uint8_t row=0; row<LEDMAT_ROWS_NUM; row++) {
+        display_pixel_set(col, row, (ship_position[col] & (1 << (row))));
+    }
+}
+
+
 /**
  * @brief find the start point of the ship to set its position
  * 
@@ -23,7 +32,7 @@ uint8_t ship_initialise_start_point(uint8_t* col, uint8_t ship) {
     char shift = 0;
     while(1) {
         //shift back and move to next column
-        if((ship<<(shift))&(1<<(7))) {
+        if((ship<<(shift))&(1<<(LEDMAT_ROWS_NUM))) {
             *col--;
             ship >>= shift;
             //reset shift to prevent number of bits are exceeding over 7
@@ -76,18 +85,21 @@ bool ship_positioning(uint8_t ship, size_t col, size_t size) {
             ship_position[col] ^= ship;
             ship <<= 1;
             ship_position[col] |= ship;
+            draw_field(col);
         }
     } else if(navswitch_push_event_p(NAVSWITCH_NORTH)) {
         if(((ship >> 1) >= size) || collision_check(ship_position[col], (ship >> 1))) {
             ship_position[col] ^= ship;
             ship >>= 1;
             ship_position[col] |= ship;
+            draw_field(col);
         }
     } else if(navswitch_push_event_p(NAVSWITCH_WEST)) {
         if (col!=0 && collision_check(ship_position[col-1], ship_position[col])) {
             ship_position[col] ^= ship;
             col--;
             ship_position[col] |= ship;
+            draw_field(col);
         }
 
     } else if (navswitch_push_event_p(NAVSWITCH_EAST)) {
@@ -95,6 +107,7 @@ bool ship_positioning(uint8_t ship, size_t col, size_t size) {
             ship_position[col] ^= ship;
             col++;
             ship_position[col] |= ship;
+            draw_field(col);
         }
     }
 
@@ -108,7 +121,7 @@ bool ship_positioning(uint8_t ship, size_t col, size_t size) {
 void ship_init(void) {
 
     pacer_init(500);
-    ledmat_init();
+    display_init();
     navswitch_init();
 
     for(size_t i=0; i<3; i++){
@@ -117,14 +130,11 @@ void ship_init(void) {
         // need to prevent ship's collision at the beginning of initialisation
         uint8_t unit = ship_initialise_start_point(&col, SHIP[i]);
         ship_position[col] |= unit;
-
-        size_t led_col = 0;
+        draw_field(col);
         while(!done){
             pacer_wait();
-            display_update();
             done = ship_positioning(unit, col, SHIP[i]);
-            ledmat_display_column(ship_position[led_col], led_col);
-            (led_col > LEDMAT_COLS_NUM-1) ? led_col = 0 : led_col++;
+            display_update();
         }
     }
 }
