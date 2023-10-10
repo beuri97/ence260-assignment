@@ -15,7 +15,7 @@ all: game.out
 
 
 # Compile: create object files from C source files.
-game.o: game.c ../../drivers/avr/system.h battleship.h
+game.o: game.c ../../drivers/avr/system.h ../../drivers/led.h battleship.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 pio.o: ../../drivers/avr/pio.c ../../drivers/avr/pio.h ../../drivers/avr/system.h
@@ -47,7 +47,7 @@ battleship.o: battleship.c ../../drivers/avr/system.h ../../drivers/ledmat.h ../
 
 
 # Link: create ELF output file from object files.
-game.out: game.o system.o battleship.o pio.o timer.o pacer.o display.o ledmat.o navswitch.o
+game.out: game.o system.o battleship.o pio.o timer.o pacer.o display.o ledmat.o navswitch.o led.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 
