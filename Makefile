@@ -30,6 +30,9 @@ pacer.o: ../../utils/pacer.c ../../drivers/avr/system.h ../../drivers/avr/timer.
 system.o: ../../drivers/avr/system.c ../../drivers/avr/system.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
+led.o: ../../drivers/led.c ../../drivers/led.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
 display.o: ../../drivers/display.c ../../drivers/avr/system.h ../../drivers/display.h ../../drivers/ledmat.h
 	$(CC) -c $(CFLAGS) $< -o $@
 

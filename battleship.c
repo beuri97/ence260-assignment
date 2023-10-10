@@ -1,5 +1,3 @@
-#include <avr/io.h>
-
 #include "battleship.h"
 #include "ledmat.h"
 #include "navswitch.h"
@@ -70,7 +68,6 @@ bool collision_check(size_t col, uint8_t target) {
  */
 bool ship_positioning(uint8_t ship, size_t col, size_t size) {
 
-    navswitch_init();
 
     if(navswitch_push_event_p(NAVSWITCH_PUSH)) {
         return 1;
@@ -112,6 +109,7 @@ void ship_init(void) {
 
     pacer_init(500);
     ledmat_init();
+    navswitch_init();
 
     for(size_t i=0; i<3; i++){
         size_t col = 4;
@@ -129,8 +127,5 @@ void ship_init(void) {
             (led_col > LEDMAT_COLS_NUM-1) ? led_col = 0 : led_col++;
         }
     }
-
-    DDRC |= (1<<2);
-    PORTC |= (1 << 2);
 }
 
