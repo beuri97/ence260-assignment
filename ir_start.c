@@ -54,7 +54,7 @@ void ir_start_init(bool finished)
     while(!finished){
         uint8_t enemyStatus = revieveDone();
 
-        if(enemyStatus = 1){
+        if(enemyStatus == 1){
             turnOrder = 2;
         }
     }
