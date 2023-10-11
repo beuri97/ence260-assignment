@@ -24,7 +24,7 @@ void sendDone(char order)
  * 
  * @return returns the value of the enemy's turn position
 */
-uint8_t reveiveDone(void)
+uint8_t receiveDone(void)
 {
     char doneChar = 0;
     if (ir_uart_read_ready_p()){
@@ -46,25 +46,20 @@ uint8_t getOrder(void)
 
 /**
  * @brief check if the player has finished setup, waits for other player to finish, then sets turn order
- * 
- * @param finished 0 if the player is still setting up, 1 if done
 */
-void ir_start_init(bool finished)
+void ir_start_init(void)
 {
-    while(!finished){
-        uint8_t enemyStatus = revieveDone();
-
-        if(enemyStatus == 1){
-            turnOrder = 2;
-        }
+    bool bothReady = false;
+    sendDone(turnOrder);
+    while(enemyStatus!= 0){
+        uint8_t enemyStatus = receiveDone();
     }
-
-    while(finished){
-        sendDone(turnOrder);
-        uint8_t enemyStatus = revieveDone();
-
-        if(enemyStatus != 0){
-            break;
-        }
+    if(enemyStatus == 1){
+        turnOrder = 2;
+        sendDone(2);
+        bothReady = true;
+    }
+    if(enemyStatus == 2){
+        bothReady = true;
     }
 }
