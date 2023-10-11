@@ -49,17 +49,18 @@ uint8_t getOrder(void)
 */
 void ir_start_init(void)
 {
-    bool bothReady = false;
+    uint8_t enemyStatus = 0;
+    uint8_t bothReady = 0;
     sendDone(turnOrder);
     while(enemyStatus!= 0){
-        uint8_t enemyStatus = receiveDone();
+        enemyStatus = receiveDone();
     }
     if(enemyStatus == 1){
         turnOrder = 2;
         sendDone(2);
-        bothReady = true;
+        bothReady = 1;
     }
     if(enemyStatus == 2){
-        bothReady = true;
+        bothReady = 1;
     }
 }
