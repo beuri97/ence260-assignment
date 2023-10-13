@@ -1,24 +1,25 @@
 #include "battleship.h"
-#include "ledmat.h"
 #include "navswitch.h"
-#include "pacer.h"
 #include "system.h"
 #include "display.h"
+#include "pacer.h"
+
+#define TOTAL_NUM_SHIP 3
 
 
 /**
-    Bitmap to display battleship postion to matrix-LED
-*/ 
-static uint8_t ship_position[5] = {0x00, 0x00, 0x00, 0x00, 0x00};
+ * @brief an array of ship_t which save ships status and its position
+ * 
+ */
+static ship_t ships[TOTAL_NUM_SHIP];
 
 
-void draw_field(uint8_t col)
+void draw_ship(ship_t* ship, bool val)
 {
-    for (uint8_t row=0; row<LEDMAT_ROWS_NUM; row++) {
-        display_pixel_set(col, row, (ship_position[col] & (1 << (row))));
+    for(uint8_t i = ship->row; i < (ship->row + ship->size+1); i++) {
+        display_pixel_set(ship->col, i, val);
     }
 }
-
 
 /**
  * @brief find the start point of the ship to set its position
@@ -27,43 +28,19 @@ void draw_field(uint8_t col)
  * @param ship initiall ship size
  * @return uint8_t returns 7-bits number that represent ship and its postion in the located column
  */
-uint8_t ship_initialise_start_point(uint8_t* col, uint8_t ship) {
+void ship_initialise_start_point(ship_t* ship) {
 
-    char shift = 0;
     while(1) {
-        //shift back and move to next column
-        if((ship<<(shift))&(1<<(LEDMAT_ROWS_NUM))) {
-            *col--;
-            ship >>= shift;
-            //reset shift to prevent number of bits are exceeding over 7
-            shift = 0;
-        } else if(ship_position[*col] & ship) {
-            ship <<= ++shift;
+        if((ship->row + ship->size >= LEDMAT_ROWS_NUM))
+        {
+            ship->col++;
+            ship->row = 0;
+        } else if(display_pixel_get(ship->col, ship->row + ship->size) || display_pixel_get(ship->col, ship->row)) {
+            ship->row++;
         } else {
             break;
         }
-    }
-
-    return ship;
-
-}
-
-
-/**
- * @brief check if ship is collide with others when set the ship's position
- * 
- * @param col led_matrix column 0 to 4 inclusive
- * @param target current ship status
- * @return true if no collision event happens
- * @return false when collision event happens
- */
-bool collision_check(size_t col, uint8_t target) {
-        
-    if(target & (1<<7) || (ship_position[col] & target) ) {
-        return 0;
-    } else {
-        return 1;
-    }
+    }    
 }
 
 /**
@@ -75,39 +52,47 @@ bool collision_check(size_t col, uint8_t target) {
  * @return true when NAVSWITCH_PUSH push event is happen - represent ship positioning setup is finish
  * @return false otherwise
  */
-bool ship_positioning(uint8_t ship, size_t col, size_t size) {
+bool ship_positioning(ship_t* ship) {
 
-
+    navswitch_update();
+    int8_t check_point = 0;
     if(navswitch_push_event_p(NAVSWITCH_PUSH)) {
         return 1;
+        
     } else if(navswitch_push_event_p(NAVSWITCH_SOUTH)) {
-        if(collision_check(ship_position[col], (ship << 1))) {
-            ship_position[col] ^= ship;
-            ship <<= 1;
-            ship_position[col] |= ship;
-            draw_field(col);
-        }
+        check_point = (ship->row + ship->size +1);
+
+        if (check_point < LEDMAT_ROWS_NUM && !(display_pixel_get(ship->col, check_point))) {
+            display_pixel_set(ship->col, ship->row, 0);
+            display_pixel_set(ship->col, check_point, 1);
+            ship->row++;
+            }
+
+
     } else if(navswitch_push_event_p(NAVSWITCH_NORTH)) {
-        if(((ship >> 1) >= size) || collision_check(ship_position[col], (ship >> 1))) {
-            ship_position[col] ^= ship;
-            ship >>= 1;
-            ship_position[col] |= ship;
-            draw_field(col);
-        }
-    } else if(navswitch_push_event_p(NAVSWITCH_WEST)) {
-        if (col!=0 && collision_check(ship_position[col-1], ship_position[col])) {
-            ship_position[col] ^= ship;
-            col--;
-            ship_position[col] |= ship;
-            draw_field(col);
+        check_point = (ship->row -1);
+
+        if (check_point >= 0 && !(display_pixel_get(ship->col, check_point))) {
+            display_pixel_set(ship->col, check_point, 1);
+            display_pixel_set(ship->col, ship->row + ship->size, 0);
+            ship->row--;
         }
 
+    } else if(navswitch_push_event_p(NAVSWITCH_WEST)) {
+        check_point = ship->col -1;
+        if (check_point >= 0 && (display_pixel_get(check_point, (ship->row + ship->size)) == 0 && display_pixel_get(check_point, ship->row) == 0)) {
+            draw_ship(ship, 0);
+            ship->col--;
+            draw_ship(ship, 1);
+        }
+        
+
     } else if (navswitch_push_event_p(NAVSWITCH_EAST)) {
-        if(col != 4 && collision_check(ship_position[col+1], ship_position[col])){
-            ship_position[col] ^= ship;
-            col++;
-            ship_position[col] |= ship;
-            draw_field(col);
+        check_point = ship->col +1;
+        if (check_point < LEDMAT_COLS_NUM && (display_pixel_get(check_point, (ship->row + ship->size)) == 0 && display_pixel_get(check_point, ship->row) == 0)) {
+            draw_ship(ship,0);
+            ship->col++;
+            draw_ship(ship,1);
         }
     }
 
@@ -118,24 +103,27 @@ bool ship_positioning(uint8_t ship, size_t col, size_t size) {
  * @brief initiallize battleship setup - aka. initiallising game
  * 
  */
-void ship_init(void) {
+void ship_init(uint16_t rate) {
 
-    pacer_init(500);
+    pacer_init(rate);
     display_init();
     navswitch_init();
 
-    for(size_t i=0; i<3; i++){
-        size_t col = 4;
+    for(uint8_t i=0; i < TOTAL_NUM_SHIP; i++){     
         bool done = 0;
+        ship_t ship = {.size = SHIP[i], .col=2, .row=1};
         // need to prevent ship's collision at the beginning of initialisation
-        uint8_t unit = ship_initialise_start_point(&col, SHIP[i]);
-        ship_position[col] |= unit;
-        draw_field(col);
+        ship_initialise_start_point(&ship);
+        draw_ship(&ship, 1);
+
         while(!done){
             pacer_wait();
-            done = ship_positioning(unit, col, SHIP[i]);
+            done = ship_positioning(&ship);
             display_update();
         }
+        ships[i] = ship;
     }
+    
+    display_clear();
+    display_update();
 }
-
