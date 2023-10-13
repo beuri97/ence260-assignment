@@ -45,6 +45,12 @@ navswitch.o: ../../drivers/navswitch.c ../../drivers/avr/delay.h ../../drivers/a
 battleship.o: battleship.c ../../drivers/avr/system.h ../../drivers/ledmat.h ../../drivers/navswitch.h ../../utils/pacer.h battleship.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
+font.o: ../../utils/font.c ../../utils/font.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
+tinygl.o: ../../utils/tinygl.c ../../drivers/avr/system.h ../../drivers/display.h ../../utils/font.h ../../utils/tinygl.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
 prescale.o: ../../drivers/avr/prescale.c ../../drivers/avr/system.h  ../../drivers/avr/prescale.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
@@ -61,7 +67,7 @@ ir_start.o: ir_start.c ../../drivers/avr/system.h ../../utils/pacer.h ../../driv
 	$(CC) -c $(CFLAGS) $< -o $@
 
 # Link: create ELF output file from object files.
-game.out: game.o system.o battleship.o pio.o timer.o pacer.o display.o ledmat.o navswitch.o led.o prescale.o timer0.o usart1.o ir_uart.o ir_start.o
+game.out: game.o system.o battleship.o pio.o timer.o pacer.o display.o ledmat.o font.o tinygl.o navswitch.o led.o prescale.o timer0.o usart1.o ir_uart.o ir_start.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 
