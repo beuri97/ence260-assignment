@@ -51,7 +51,7 @@ uint8_t ir_start_init(void)
 {
     uint8_t enemyStatus = 0;
     sendDone(turnOrder);
-    while(enemyStatus!= 0){
+    while(enemyStatus == 0){
         enemyStatus = receiveDone();
     }
     if(enemyStatus == 1){
