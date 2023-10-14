@@ -49,14 +49,20 @@ uint8_t getOrder(void)
 */
 uint8_t ir_start_init(void)
 {
+    ir_uart_init();
     uint8_t enemyStatus = 0;
-    sendDone(turnOrder);
+    enemyStatus = receiveDone();
+    if (enemyStatus != 0) {
+        turnOrder = 2;
+        sendDone(turnOrder);
+    } else {
+        turnOrder = 1;
+        sendDone(turnOrder);
+    }
     while(enemyStatus == 0){
         enemyStatus = receiveDone();
     }
-    if(enemyStatus == 1){
-        turnOrder = 2;
-        sendDone(2);
-    }
+    sendDone(turnOrder);
+
     return turnOrder;
 }
