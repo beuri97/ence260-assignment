@@ -3,7 +3,6 @@
 #include "system.h"
 #include "display.h"
 #include "pacer.h"
-#include "object.h"
 
 #define TOTAL_NUM_SHIP 3
 
@@ -130,7 +129,7 @@ void ship_init(uint16_t rate) {
 
         while(!done){
             pacer_wait();
-            done = ship_positioning(&ship);
+            done = positioning(&ship);
             display_update();
         }
         ships[i] = ship;

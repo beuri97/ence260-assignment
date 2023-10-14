@@ -4,9 +4,11 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#include "object.h"
+
 
 void ship_init(uint16_t rate);
-bool positioning(object_t object);
+bool positioning(object_t* object);
 
 
 #endif //BATTLESHIP_H
