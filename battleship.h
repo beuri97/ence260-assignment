@@ -6,7 +6,7 @@
 
 
 void ship_init(uint16_t rate);
-bool positioning(void);
+bool positioning(object_t object);
 
 
 #endif //BATTLESHIP_H

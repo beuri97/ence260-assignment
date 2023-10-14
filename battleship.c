@@ -53,7 +53,7 @@ void ship_initialise_start_point(object_t* ship) {
  * @return true when NAVSWITCH_PUSH push event is happen - represent ship position init is finish
  * @return false otherwise
  */
-bool ship_positioning(object_t* ship) {
+bool positioning(object_t* object) {
 
 
     navswitch_update();
@@ -64,45 +64,47 @@ bool ship_positioning(object_t* ship) {
         return 1;
     
     } else if(navswitch_push_event_p(NAVSWITCH_SOUTH)) {
-        check_point = (ship->row + ship->size +1);
+        check_point = (object->row + object->size +1);
 
         // move ship to left 
-        if (check_point < LEDMAT_ROWS_NUM && !(display_pixel_get(ship->col, check_point))) {
-            display_pixel_set(ship->col, ship->row, 0);
-            display_pixel_set(ship->col, check_point, 1);
-            ship->row++;
+        if (check_point < LEDMAT_ROWS_NUM && !(display_pixel_get(object->col, check_point))) {
+            display_pixel_set(object->col, object->row, 0);
+            display_pixel_set(object->col, check_point, 1);
+            object->row++;
             }
 
 
     } else if(navswitch_push_event_p(NAVSWITCH_NORTH)) {
-        check_point = (ship->row -1);
+        check_point = (object->row -1);
 
         // move to right
-        if (check_point >= 0 && !(display_pixel_get(ship->col, check_point))) {
-            display_pixel_set(ship->col, check_point, 1);
-            display_pixel_set(ship->col, ship->row + ship->size, 0);
-            ship->row--;
+        if (check_point >= 0 && !(display_pixel_get(object->col, check_point))) {
+            display_pixel_set(object->col, check_point, 1);
+            display_pixel_set(object->col, object->row + object->size, 0);
+            object->row--;
         }
 
     } else if(navswitch_push_event_p(NAVSWITCH_WEST)) {
-        check_point = ship->col -1;
+        check_point = object->col -1;
 
         // move to up
-        if (check_point >= 0 && (display_pixel_get(check_point, (ship->row + ship->size)) == 0 && display_pixel_get(check_point, ship->row) == 0)) {
-            draw_ship(ship, 0);
-            ship->col--;
-            draw_ship(ship, 1);
+        if (check_point >= 0 && 
+           (display_pixel_get(check_point, (object->row + object->size)) == 0 && display_pixel_get(check_point, object->row) == 0)) {
+            draw_ship(object, 0);
+            object->col--;
+            draw_ship(object, 1);
         }
         
 
     } else if (navswitch_push_event_p(NAVSWITCH_EAST)) {
-        check_point = ship->col +1;
+        check_point = object->col +1;
 
         //move to down
-        if (check_point < LEDMAT_COLS_NUM && (display_pixel_get(check_point, (ship->row + ship->size)) == 0 && display_pixel_get(check_point, ship->row) == 0)) {
-            draw_ship(ship,0);
-            ship->col++;
-            draw_ship(ship,1);
+        if (check_point < LEDMAT_COLS_NUM && 
+           (display_pixel_get(check_point, (object->row + object->size)) == 0 && display_pixel_get(check_point, object->row) == 0)) {
+            draw_ship(object,0);
+            object->col++;
+            draw_ship(object,1);
         }
     }
 
