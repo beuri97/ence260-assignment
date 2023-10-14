@@ -42,7 +42,7 @@ ledmat.o: ../../drivers/ledmat.c ../../drivers/avr/pio.h ../../drivers/avr/syste
 navswitch.o: ../../drivers/navswitch.c ../../drivers/avr/delay.h ../../drivers/avr/pio.h ../../drivers/avr/system.h ../../drivers/navswitch.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-battleship.o: battleship.c ../../drivers/avr/system.h ../../drivers/ledmat.h ../../drivers/navswitch.h ../../utils/pacer.h battleship.h
+battleship.o: battleship.c ../../drivers/avr/system.h  ../../drivers/navswitch.h ../../utils/pacer.h ../../drivers/display.h battleship.h object.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 font.o: ../../utils/font.c ../../utils/font.h
