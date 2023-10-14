@@ -9,11 +9,15 @@
 
 /**
  * @brief an array of ship_t which save ships status and its position
- * 
  */
 static ship_t ships[TOTAL_NUM_SHIP];
 
 
+/**
+ * @brief draw or remove ship into led-matriex
+ * @param ship structure of ship that has start row, col and size information
+ * @param val led status value 1 for led on 0 for other
+*/
 void draw_ship(ship_t* ship, bool val)
 {
     for(uint8_t i = ship->row; i < (ship->row + ship->size+1); i++) {
@@ -22,11 +26,8 @@ void draw_ship(ship_t* ship, bool val)
 }
 
 /**
- * @brief find the start point of the ship to set its position
- * 
- * @param col led_matrix column 0 to 4 inclusive and start from 4
- * @param ship initiall ship size
- * @return uint8_t returns 7-bits number that represent ship and its postion in the located column
+ * @brief initilaise a start point of the ship to set its position
+ * @param ship ship object informations to be initialise
  */
 void ship_initialise_start_point(ship_t* ship) {
 
@@ -44,24 +45,27 @@ void ship_initialise_start_point(ship_t* ship) {
 }
 
 /**
- * @brief function about bitwise operation to change ship position
+ * @brief ship shifting to initialise ships' position. Ship will not move if ship is going out of bound of led-matirx or
+ * other ship is blocking its way.
  * 
- * @param ship current ship status (include its current position)
- * @param col current ship postion in column
- * @param size current ship size
- * @return true when NAVSWITCH_PUSH push event is happen - represent ship positioning setup is finish
+ * @param ship structure of ship that has row, col, and its size
+ * @return true when NAVSWITCH_PUSH push event is happen - represent ship position init is finish
  * @return false otherwise
  */
 bool ship_positioning(ship_t* ship) {
 
+
     navswitch_update();
     int8_t check_point = 0;
+
     if(navswitch_push_event_p(NAVSWITCH_PUSH)) {
+        // finish setup ship location
         return 1;
-        
+    
     } else if(navswitch_push_event_p(NAVSWITCH_SOUTH)) {
         check_point = (ship->row + ship->size +1);
 
+        // move ship to left 
         if (check_point < LEDMAT_ROWS_NUM && !(display_pixel_get(ship->col, check_point))) {
             display_pixel_set(ship->col, ship->row, 0);
             display_pixel_set(ship->col, check_point, 1);
@@ -72,6 +76,7 @@ bool ship_positioning(ship_t* ship) {
     } else if(navswitch_push_event_p(NAVSWITCH_NORTH)) {
         check_point = (ship->row -1);
 
+        // move to right
         if (check_point >= 0 && !(display_pixel_get(ship->col, check_point))) {
             display_pixel_set(ship->col, check_point, 1);
             display_pixel_set(ship->col, ship->row + ship->size, 0);
@@ -80,6 +85,8 @@ bool ship_positioning(ship_t* ship) {
 
     } else if(navswitch_push_event_p(NAVSWITCH_WEST)) {
         check_point = ship->col -1;
+
+        // move to up
         if (check_point >= 0 && (display_pixel_get(check_point, (ship->row + ship->size)) == 0 && display_pixel_get(check_point, ship->row) == 0)) {
             draw_ship(ship, 0);
             ship->col--;
@@ -89,6 +96,8 @@ bool ship_positioning(ship_t* ship) {
 
     } else if (navswitch_push_event_p(NAVSWITCH_EAST)) {
         check_point = ship->col +1;
+
+        //move to down
         if (check_point < LEDMAT_COLS_NUM && (display_pixel_get(check_point, (ship->row + ship->size)) == 0 && display_pixel_get(check_point, ship->row) == 0)) {
             draw_ship(ship,0);
             ship->col++;
@@ -124,6 +133,7 @@ void ship_init(uint16_t rate) {
         ships[i] = ship;
     }
     
+    // clear display to hide your ship position to opponent
     display_clear();
     display_update();
 }
