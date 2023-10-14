@@ -20,7 +20,7 @@ int main (void)
     tinygl_text_mode_set(TINYGL_TEXT_MODE_SCROLL);
     tinygl_draw_message("Choose ship positions", tinygl_point (0, 0), 1);
     pacer_init(PACER_RATE);
-    ship_init();
+    ship_init(PACER_RATE);
     led_set(LED1, 0);
     while (1)
     {
