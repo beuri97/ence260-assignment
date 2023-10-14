@@ -3,6 +3,7 @@
 #include "system.h"
 #include "display.h"
 #include "pacer.h"
+#include "object.h"
 
 #define TOTAL_NUM_SHIP 3
 
@@ -10,7 +11,7 @@
 /**
  * @brief an array of ship_t which save ships status and its position
  */
-static ship_t ships[TOTAL_NUM_SHIP];
+static object_t ships[TOTAL_NUM_SHIP];
 
 
 /**
@@ -18,7 +19,7 @@ static ship_t ships[TOTAL_NUM_SHIP];
  * @param ship structure of ship that has start row, col and size information
  * @param val led status value 1 for led on 0 for other
 */
-void draw_ship(ship_t* ship, bool val)
+void draw_ship(object_t* ship, bool val)
 {
     for(uint8_t i = ship->row; i < (ship->row + ship->size+1); i++) {
         display_pixel_set(ship->col, i, val);
@@ -29,7 +30,7 @@ void draw_ship(ship_t* ship, bool val)
  * @brief initilaise a start point of the ship to set its position
  * @param ship ship object informations to be initialise
  */
-void ship_initialise_start_point(ship_t* ship) {
+void ship_initialise_start_point(object_t* ship) {
 
     while(1) {
         if((ship->row + ship->size >= LEDMAT_ROWS_NUM))
@@ -52,7 +53,7 @@ void ship_initialise_start_point(ship_t* ship) {
  * @return true when NAVSWITCH_PUSH push event is happen - represent ship position init is finish
  * @return false otherwise
  */
-bool ship_positioning(ship_t* ship) {
+bool ship_positioning(object_t* ship) {
 
 
     navswitch_update();
@@ -120,7 +121,7 @@ void ship_init(uint16_t rate) {
 
     for(uint8_t i=0; i < TOTAL_NUM_SHIP; i++){     
         bool done = 0;
-        ship_t ship = {.size = SHIP[i], .col=2, .row=1};
+        object_t ship = {.size = SHIP[i], .col=2, .row=1};
         // need to prevent ship's collision at the beginning of initialisation
         ship_initialise_start_point(&ship);
         draw_ship(&ship, 1);
