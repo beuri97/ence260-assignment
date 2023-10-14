@@ -47,10 +47,9 @@ uint8_t getOrder(void)
 /**
  * @brief check if the player has finished setup, waits for other player to finish, then sets turn order
 */
-void ir_start_init(void)
+uint8_t ir_start_init(void)
 {
     uint8_t enemyStatus = 0;
-    uint8_t bothReady = 0;
     sendDone(turnOrder);
     while(enemyStatus!= 0){
         enemyStatus = receiveDone();
@@ -58,9 +57,6 @@ void ir_start_init(void)
     if(enemyStatus == 1){
         turnOrder = 2;
         sendDone(2);
-        bothReady = 1;
     }
-    if(enemyStatus == 2){
-        bothReady = 1;
-    }
+    return turnOrder;
 }
