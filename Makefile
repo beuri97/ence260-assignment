@@ -15,7 +15,7 @@ all: game.out
 
 
 # Compile: create object files from C source files.
-game.o: game.c ../../drivers/avr/system.h ../../drivers/led.h battleship.h ir_start.h missile.h ir_start.h
+game.o: game.c ../../drivers/avr/system.h ../../drivers/led.h ir_start.h missile.h battleship.h ir_start.h progress.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 pio.o: ../../drivers/avr/pio.c ../../drivers/avr/pio.h ../../drivers/avr/system.h
@@ -39,10 +39,13 @@ display.o: ../../drivers/display.c ../../drivers/avr/system.h ../../drivers/disp
 ledmat.o: ../../drivers/ledmat.c ../../drivers/avr/pio.h ../../drivers/avr/system.h ../../drivers/ledmat.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
+button.o: ../../drivers/button.c ../../drivers/avr/pio.h ../../drivers/avr/system.h ../../drivers/button.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
 navswitch.o: ../../drivers/navswitch.c ../../drivers/avr/delay.h ../../drivers/avr/pio.h ../../drivers/avr/system.h ../../drivers/navswitch.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-battleship.o: battleship.c ../../drivers/avr/system.h  ../../drivers/navswitch.h ../../utils/pacer.h ../../drivers/display.h battleship.h
+battleship.o: battleship.c ../../drivers/avr/system.h  ../../drivers/navswitch.h ../../utils/pacer.h ../../drivers/display.h ../../drivers/button.h battleship.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 font.o: ../../utils/font.c ../../utils/font.h
@@ -66,11 +69,14 @@ ir_uart.o: ../../drivers/avr/ir_uart.c ../../drivers/avr/system.h ../../drivers/
 ir_start.o: ir_start.c ../../drivers/avr/system.h ../../utils/pacer.h ../../drivers/avr/ir_uart.h ir_start.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-missile.o: missile.c ../../drivers/avr/system.h ../../utils/pacer.h ../../drivers/navswitch.h ../../drivers/display.h battleship.h ir_start.h missile.h
+missile.o: missile.c missile.h
+	$(CC) -c $(CFLAGS) $< -o $@
+
+progress.o: progress.c ../../drivers/avr/system.h ../../utils/pacer.h ../../drivers/led.h ../../utils/tinygl.h ../../drivers/display.h battleship.h progress.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 # Link: create ELF output file from object files.
-game.out: game.o system.o battleship.o pio.o timer.o pacer.o display.o ledmat.o font.o tinygl.o navswitch.o led.o prescale.o timer0.o usart1.o ir_uart.o ir_start.o missile.o
+game.out: game.o system.o battleship.o pio.o timer.o pacer.o display.o ledmat.o font.o tinygl.o navswitch.o led.o prescale.o timer0.o usart1.o ir_uart.o ir_start.o missile.o progress.o button.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 
