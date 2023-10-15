@@ -6,10 +6,14 @@
 
 #include "object.h"
 
+/*Store ship info into static array ships*/
+void store_ship(uint8_t index, object_t ship);
 
-void ship_init(uint16_t rate);
 bool positioning(object_t* object);
-void draw_ship(object_t* ship, bool val);
+
 void control_interface_init(void);
+
+/*Check if any navswitch buttons is pushed*/
+bool any_push(void);
 
 #endif //BATTLESHIP_H
