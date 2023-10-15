@@ -6,10 +6,10 @@
 #include "navswitch.h"
 #include "ir_start.h"
 #include "../fonts/font5x7_1.h"
-#include "missile.h" // change
+#include "missile.h"
 
 #define PACER_RATE 500
-#define MESSAGE_RATE 10
+#define MESSAGE_RATE 25
 
 int main (void)
 {
@@ -28,12 +28,14 @@ int main (void)
     tinygl_draw_message("Choose ship positions", tinygl_point (0, 0), 1);
     bool keep_going = false;
     while(!keep_going) {
+        pacer_wait();
         navswitch_update();
         if(navswitch_push_event_p(NAVSWITCH_PUSH)) {
             keep_going = true;
-        pacer_wait();
+        }
         tinygl_update();
     }
+
     ship_init(PACER_RATE);
     uint8_t position = ir_start_init();
     if(position == 1) {
@@ -58,6 +60,5 @@ int main (void)
         }
         led_set(LED1, 1);
         missile_init(PACER_RATE);
-        }
     }
 }
