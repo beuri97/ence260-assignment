@@ -1,30 +1,15 @@
+#include <stdlib.h>
+#include <stdbool.h>
+
 #include "missile.h"
-#include "system.h"
-#include "display.h"
-#include "pacer.h"
-#include "battleship.h"
-#include "object.h"
-#include "ir_start.h"
 
 
-void missile_init(uint16_t rate)
+void missile_init(object_t* missile)
 {
-    pacer_init(rate);
-    display_init();
-    bool done = 0;
-    object_t* missile = malloc(sizeof(object_t));
-    missile->size = MISSILE;
+
+    missile->row = 4;
     missile->col = 2;
-    missile->row = 3;
-    draw_ship(missile, 1);
-    while(!done) {
-        pacer_wait();
-        done = positioning(missile);
-        display_update();
-    }
-    sendDone(missile->col);
-    sendDone(missile->row);
-    free(missile);
-    display_clear();
-    display_update();
+    missile->size = MISSILE;
+    missile->destroy=false;
+
 }

@@ -1,12 +1,9 @@
 #ifndef MISSILE_H
 #define MISSILE_H
 
-#include <stdint.h>
-#include <stdio.h>
-#include <stdbool.h>
-#include <stdlib.h>
+#include "object.h"
 
 
-void missile_init(uint16_t rate);
+void missile_init(object_t* missile);
 
 #endif //MISSILE_H
