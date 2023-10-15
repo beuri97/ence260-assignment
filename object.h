@@ -10,6 +10,8 @@
 #define SMALL 1
 #define MISSILE 0
 
+#define TOTAL_NUM_SHIP 3
+
 // define array SHIP and to use for 'for loop' at ship_init function
 #define SHIP (uint8_t[]){LARGE, MEDIUM, SMALL}
 
