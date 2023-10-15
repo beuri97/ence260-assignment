@@ -3,6 +3,8 @@
 #include "system.h"
 #include "display.h"
 #include "pacer.h"
+#include "pio.h"
+#include "button.h"
 
 #define TOTAL_NUM_SHIP 3
 
@@ -52,12 +54,10 @@ void ship_initialise_start_point(object_t* ship) {
  * @return true when NAVSWITCH_PUSH push event is happen - represent ship position init is finish
  * @return false otherwise
  */
-bool positioning(object_t* object) {
-
-
-    navswitch_update();
+bool positioning(object_t* object) 
+{
     int8_t check_point = 0;
-
+    navswitch_update();
     if(navswitch_push_event_p(NAVSWITCH_PUSH)) {
         // finish setup ship location
         return 1;
@@ -107,18 +107,30 @@ bool positioning(object_t* object) {
         }
     }
 
+
+
     return 0;
  }
+
+
+void control_interface_init(void)
+{
+    navswitch_init();
+    button_init();
+
+
+}
 
 /**
  * @brief initiallize battleship setup - aka. initiallising game
  * 
  */
-void ship_init(uint16_t rate) {
+/*This function will move to module show*/
+void ship_init(uint16_t rate) 
+{
 
     pacer_init(rate);
     display_init();
-    navswitch_init();
 
     for(uint8_t i=0; i < TOTAL_NUM_SHIP; i++){     
         bool done = 0;

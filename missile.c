@@ -1,5 +1,4 @@
 #include "missile.h"
-#include "navswitch.h"
 #include "system.h"
 #include "display.h"
 #include "pacer.h"
@@ -11,7 +10,6 @@
 void missile_init(uint16_t rate)
 {
     pacer_init(rate);
-    navswitch_init();
     display_init();
     bool done = 0;
     object_t* missile = malloc(sizeof(object_t));

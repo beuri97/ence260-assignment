@@ -10,5 +10,6 @@
 void ship_init(uint16_t rate);
 bool positioning(object_t* object);
 void draw_ship(object_t* ship, bool val);
+void control_interface_init(void);
 
 #endif //BATTLESHIP_H
