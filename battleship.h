@@ -9,6 +9,10 @@
 /*Store ship info into static array ships*/
 void store_ship(uint8_t index, object_t ship);
 
+void show_ships(void);
+
+bool check_ship_hit(uint8_t missile_col, uint8_t missile_row);
+
 bool positioning(object_t* object);
 
 void control_interface_init(void);

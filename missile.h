@@ -5,5 +5,6 @@
 
 
 void missile_init(object_t* missile);
+void missile_shoot(void);
 
 #endif //MISSILE_H

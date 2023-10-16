@@ -13,8 +13,33 @@ static object_t ships[TOTAL_NUM_SHIP];
 
 
 /*Store ship info into static array ships*/
-void store_ship(uint8_t index, object_t ship) {
+void store_ship(uint8_t index, object_t ship)
+{
     ships[index] = ship;
+}
+
+/*Display all ships onto the LED matrix*/
+void show_ships(void)
+{
+    for(uint8_t i = 0; i < TOTAL_NUM_SHIP; i++) {
+        object_t ship = ships[i];
+        draw_object(&ship, 1);
+    }
+}
+
+/*Check if a ship was hit by a missile. If yes, remove the ship from the matrix.*/
+bool check_ship_hit(uint8_t missile_col, uint8_t missile_row)
+{
+    for(uint8_t i = 0; i < TOTAL_NUM_SHIP; i++) {
+        object_t ship = ships[i];
+        //TODO: check LEDS to the left by the size of the ship LARGE, MEDIUM, SMALL
+        if(missile_col == ship.col && missile_row == ship.row) {
+            draw_object(&ship, 0);
+            ship.destroy = true;
+            return true;
+        }
+    }
+    return false;
 }
 
 /**

@@ -32,7 +32,7 @@ void move_in_row(uint8_t prev, uint8_t curr, uint8_t col)
 }
 
 /**
- * @brief check pixel in led-metrix is on
+ * @brief check pixel in led-matrix is on
  * 
  * @param col matrix column
  * @param row matrix row
@@ -60,7 +60,7 @@ void object_control(object_t* object)
 }
 
 /**
- * @brief draw or remove ship into led-matriex
+ * @brief draw or remove ship into led-matrix
  * @param ship structure of ship that has start row, col and size information
  * @param val led status value 1 for led on 0 for other
 */

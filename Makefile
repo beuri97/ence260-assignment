@@ -15,7 +15,7 @@ all: game.out
 
 
 # Compile: create object files from C source files.
-game.o: game.c ../../drivers/avr/system.h ../../drivers/led.h ir_start.h missile.h battleship.h ir_start.h progress.h
+game.o: game.c ../../drivers/avr/system.h ../../drivers/led.h ir_start.h missile.h battleship.h ir_start.h progress.h ../../drivers/display.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 pio.o: ../../drivers/avr/pio.c ../../drivers/avr/pio.h ../../drivers/avr/system.h
@@ -69,7 +69,7 @@ ir_uart.o: ../../drivers/avr/ir_uart.c ../../drivers/avr/system.h ../../drivers/
 ir_start.o: ir_start.c ../../drivers/avr/system.h ../../utils/pacer.h ../../drivers/avr/ir_uart.h ir_start.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
-missile.o: missile.c missile.h
+missile.o: missile.c progress.h ir_start.h missile.h
 	$(CC) -c $(CFLAGS) $< -o $@
 
 progress.o: progress.c ../../drivers/avr/system.h ../../utils/pacer.h ../../drivers/led.h ../../utils/tinygl.h ../../drivers/display.h battleship.h progress.h
