@@ -18,6 +18,18 @@
 #define MESSAGE_RATE 25
 
 
+bool check_game_over(void) {
+
+    return check_all_ship_destroyed();
+}
+
+void object_show(void) {
+
+    pacer_wait();
+    display_update();
+
+}
+
 /**
  * @brief execute row movement of object
  * 
@@ -45,19 +57,20 @@ bool collision_check(uint8_t col, uint8_t row)
 }
 
 /**
- * @brief show object on led-matrix to control/move object using navswitch
+ * @brief show object on led-matrix to control/move object using navswitch. If object parameter is 'NULL',
+ * then there is no object need control thus it will just show display.
  * 
  * @param object the object being moved
  */
 void object_control(object_t* object)
 {
+   
     bool done = 0;
     while(!done){
-        pacer_wait();
+        object_show();
         done = positioning(object);
-        display_update();
-        }
-
+    }
+    
 }
 
 /**
@@ -144,8 +157,8 @@ void instruction_set(message_t message)
 
             break;
         case PLAYER_TURN:
-            tinygl_text("Fire your missile");
             led1_on();
+            tinygl_text("Fire your missile");
             stop = false;
             while(!stop) {
                 pacer_wait();

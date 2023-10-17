@@ -6,22 +6,24 @@
 #include "ir_start.h"
 
 
-void missile_init(object_t* missile)
+ object_t* missile_init(void)
 {
 
+    object_t* missile = malloc(sizeof(object_t));
     missile->row = 3;
     missile->col = 2;
     missile->size = MISSILE;
     missile->destroy=false;
     
+    return missile;
 }
 
-void missile_shoot(void)
+void missile_shoot(object_t* missile)
 {
-    object_t* missile = malloc(sizeof(object_t));
-    missile_init(missile);
-    draw_object(missile, 1);
-    object_control(missile);
+    // object_t* missile = malloc(sizeof(object_t));
+    // missile_init(missile);
+    // draw_object(missile, 1);
+    // object_control(missile);
 
     uint8_t send = ((missile->col) << 4) | (missile->row);
 

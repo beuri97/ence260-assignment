@@ -3,8 +3,7 @@
 
 #include "object.h"
 
-
-void missile_init(object_t* missile);
-void missile_shoot(void);
+object_t* missile_init(void);
+void missile_shoot(object_t* missile);
 
 #endif //MISSILE_H

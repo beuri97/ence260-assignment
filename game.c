@@ -1,7 +1,6 @@
 #include <stdlib.h>
 
 #include "system.h"
-#include "led.h"
 #include "ir_start.h"
 #include "../fonts/font5x7_1.h"
 #include "object.h"
@@ -35,21 +34,22 @@ int main (void)
 
     if(turn == 1) {
         instruction_set(PLAYER_TURN);
-        led1_on();
-        missile_shoot();
+        object_t* missile = missile_init();
+        object_control(missile);
+        missile_shoot(missile);
         display_clear();
         display_update();
         turn++;
     } else if (turn == 2){
-        instruction_set(OPPONENT_TURN);
-        led1_off();
         show_ships();
+        instruction_set(OPPONENT_TURN);
         uint8_t get = 0;
         uint8_t col = 0;
         uint8_t row = 0;
 
         while(!get) {
-            display_update();
+            
+            object_show();
             get = receiveDone();
             if(get) {
                 row = get & 0xF;
@@ -59,7 +59,9 @@ int main (void)
                 bool hit = check_ship_hit(col, row);
                 if(hit) {
                     instruction_set(BOOM);
-                    current_ship_number = current_ship_number - 1;
+                }
+                if(check_game_over()) {
+                    sendDone(1);
                 }
                 turn--;
             }
@@ -67,12 +69,11 @@ int main (void)
     
 
         uint8_t finished = receiveDone();
-        if(finished == 1) {
-            if(current_ship_number == 0) {
-            sendDone(1);
-            instruction_set(LOSE);
+        if(finished == 1 || check_game_over()) {
+            if(check_game_over()) {
+                instruction_set(LOSE);
             } else {
-            instruction_set(WIN);
+                instruction_set(WIN);
             }
 
         }

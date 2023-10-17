@@ -6,6 +6,9 @@
 
 #include "object.h"
 
+
+bool check_all_ship_destroyed(void);
+
 /*Store ship info into static array ships*/
 void store_ship(uint8_t index, object_t ship);
 

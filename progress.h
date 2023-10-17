@@ -22,6 +22,9 @@ typedef enum {
 } message_t;
 
 
+bool check_game_over(void);
+
+void object_show(void);
 
 /**
  * @brief execute row movement of object

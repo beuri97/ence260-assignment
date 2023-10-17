@@ -12,6 +12,18 @@
 static object_t ships[TOTAL_NUM_SHIP];
 
 
+bool check_all_ship_destroyed(void) 
+{
+    for(int8_t i=0; i< TOTAL_NUM_SHIP; i++) {
+        if(ships[i].destroy == false) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+
 /**
  * @brief Store ship info into static array ships
 */
