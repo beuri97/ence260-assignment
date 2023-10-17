@@ -54,9 +54,18 @@ int main (void)
         if(hit) {
             current_ship_number = current_ship_number - 1;
         }
+        uint8_t finished = recieveDone();
+        if(finished == 1) {
+            break;
+        }
         led_set(LED1, 1);
         missile_shoot();
         display_clear();
     }
-    //Game finished
+    if(current_ship_number == 0) {
+        sendDone(1);
+        instruction_set(LOSE);
+    } else {
+        instruction_set(WIN);
+    }
 }

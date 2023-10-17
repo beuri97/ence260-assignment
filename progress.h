@@ -17,7 +17,7 @@ typedef enum {
     PLAYER_TURN,
     OPPONENT_TURN,
     WIN,
-    LOOSE,
+    LOSE,
     BOOM
 } message_t;
 

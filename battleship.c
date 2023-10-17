@@ -8,35 +8,48 @@
 
 /**
  * @brief an array of ship_t which save ships status and its position
- */
+*/
 static object_t ships[TOTAL_NUM_SHIP];
 
 
-/*Store ship info into static array ships*/
+/**
+ * @brief Store ship info into static array ships
+*/
 void store_ship(uint8_t index, object_t ship)
 {
     ships[index] = ship;
 }
 
-/*Display all ships onto the LED matrix*/
+/**
+ * @brief Display all ships onto the LED matrix
+*/
 void show_ships(void)
 {
     for(uint8_t i = 0; i < TOTAL_NUM_SHIP; i++) {
+
         object_t ship = ships[i];
         draw_object(&ship, 1);
     }
 }
 
-/*Check if a ship was hit by a missile. If yes, remove the ship from the matrix.*/
+/**
+ * @brief Check if a ship was hit by a missile. If yes, remove the ship from the matrix.
+ * 
+ * @param missile_col the column location of the missile fired
+ * @param missile_row the row location of the missile fired
+ * @return true if a ship is hit ||
+ * @return false otherwise
+*/
 bool check_ship_hit(uint8_t missile_col, uint8_t missile_row)
 {
     for(uint8_t i = 0; i < TOTAL_NUM_SHIP; i++) {
         object_t ship = ships[i];
-        //TODO: check LEDS to the left by the size of the ship LARGE, MEDIUM, SMALL
-        if(missile_col == ship.col && missile_row == ship.row) {
-            draw_object(&ship, 0);
-            ship.destroy = true;
-            return true;
+        for(uint8_t led = 0; led < ship.size; led++) {
+            if(missile_col == (ship.col + led) && (missile_row == ship.row)) {
+                draw_object(&ship, 0);
+                ship.destroy = true;
+                return true;
+            }
         }
     }
     return false;
@@ -49,7 +62,7 @@ bool check_ship_hit(uint8_t missile_col, uint8_t missile_row)
  * @param ship structure of ship that has row, col, and its size
  * @return true when NAVSWITCH_PUSH push event is happen - represent ship position init is finish || 
  * @return false otherwise
- */
+*/
 bool positioning(object_t* object) 
 {
     
@@ -107,7 +120,9 @@ bool positioning(object_t* object)
     return 0;
  }
 
-//*Check if any navswitch buttons is pushed*/
+/**
+ * @brief Check if any navswitch buttons is pushed'
+*/
 bool any_push(void)
 {
     navswitch_update();

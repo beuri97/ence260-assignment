@@ -47,6 +47,7 @@ bool collision_check(uint8_t col, uint8_t row)
 /**
  * @brief show object on led-matrix to control/move object using navswitch
  * 
+ * @param object the object being moved
  */
 void object_control(object_t* object)
 {
@@ -61,6 +62,7 @@ void object_control(object_t* object)
 
 /**
  * @brief draw or remove ship into led-matrix
+ * 
  * @param ship structure of ship that has start row, col and size information
  * @param val led status value 1 for led on 0 for other
 */
@@ -73,6 +75,7 @@ void draw_object(object_t* object, bool val)
 
 /**
  * @brief initilaise a start point of the ship to set its position
+ * 
  * @param ship ship object informations to be initialise
  */
 void ship_initialise_start_point(object_t* ship) {
@@ -90,7 +93,9 @@ void ship_initialise_start_point(object_t* ship) {
     }    
 }
 
-/*Initial game setup*/
+/**
+ * @brief Initial game setup
+*/
 void ship_init(void)
 {
     
@@ -118,14 +123,16 @@ void ship_init(void)
 
 /**
  * @brief trigger function to setup to show message on led-matrix
+ * 
+ * @param message the message type to be sent
 */
-void instruction_set(message_t message) {
+void instruction_set(message_t message)
+{
   
     switch (message)
     {
         case WELCOME:
-            tinygl_text("Push any button to start positioning ships!\0");
-            
+            tinygl_text("Push any button to start!");
             bool stop = false;
             while(!stop) {
                 pacer_wait();
@@ -137,11 +144,30 @@ void instruction_set(message_t message) {
 
             break;
         case PLAYER_TURN:
+            tinygl_text("Fire your missile");
             led1_on();
+            stop = false;
+            while(!stop) {
+                pacer_wait();
+                tinygl_update();
+                stop = any_push();
+            }
+            display_clear();
+            display_update();
+
             break;
 
         case OPPONENT_TURN:
             led1_off();
+            tinygl_text("Prepare for impact");
+            stop = false;
+            while(!stop) {
+                pacer_wait();
+                tinygl_update();
+                stop = any_push();
+            }
+            display_clear();
+            display_update();
             break;
 
         case WIN:
@@ -157,9 +183,9 @@ void instruction_set(message_t message) {
             display_update();
             break;
        
-        case LOOSE:
+        case LOSE:
             led1_off();
-            tinygl_text("You Loose!\0");
+            tinygl_text("You Lose!\0");
 
             while (1) {
                 pacer_wait();

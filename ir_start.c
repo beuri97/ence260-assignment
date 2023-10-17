@@ -46,6 +46,8 @@ uint8_t getOrder(void)
 
 /**
  * @brief check if the player has finished setup, waits for other player to finish, then sets turn order
+ * 
+ * @return the turn position for the player
 */
 uint8_t ir_start_init(void)
 {
