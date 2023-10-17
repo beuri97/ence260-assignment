@@ -23,8 +23,8 @@ void missile_shoot(void)
     draw_object(missile, 1);
     object_control(missile);
 
-    //sendDone(missile->col);
-    //sendDone(missile->row);
+    uint8_t send = ((missile->col) << 4) | (missile->row);
 
+    sendDone(send);
     free(missile);
 }

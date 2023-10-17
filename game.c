@@ -17,56 +17,67 @@ int main (void)
     control_interface_init();
     uint8_t current_ship_number = 3;
     bool finish = false;
+    uint8_t turn = 0;
 
     // I need this while loop
-    while(!finish) {
+    while(1) {
     
     if(!finish) {
         instruction_set(WELCOME);
         ship_init();
         finish = true;
+        turn = ir_start_init();
+        bool ready = receiveDone();
+        while(!ready) {
+            ready = receiveDone();
+        }
     }
 
-    }
-    
-    uint8_t position = ir_start_init();
-    if(position == 1) {
+    if(turn == 1) {
         instruction_set(PLAYER_TURN);
-        led_set(LED1, 1);
+        led1_on();
         missile_shoot();
         display_clear();
-    }
-    while(current_ship_number > 0) {
-        show_ships();
+        display_update();
+        turn++;
+    } else if (turn == 2){
         instruction_set(OPPONENT_TURN);
-        led_set(LED1, 0);
+        led1_off();
+        show_ships();
+        uint8_t get = 0;
         uint8_t col = 0;
         uint8_t row = 0;
 
-        while(col == 0) {
+        while(!get) {
             display_update();
-            col = receiveDone();
+            get = receiveDone();
+            if(get) {
+                row = get & 0xF;
+                col = get >> 4;
+                display_clear();
+                display_update();
+                bool hit = check_ship_hit(col, row);
+                if(hit) {
+                    instruction_set(BOOM);
+                    current_ship_number = current_ship_number - 1;
+                }
+                turn--;
+            }
         }
-        while(row == 0) {
-            display_update();
-            row = receiveDone();
-        }
-        bool hit = check_ship_hit(col, row);
-        if(hit) {
-            current_ship_number = current_ship_number - 1;
-        }
-        uint8_t finished = recieveDone();
+    
+
+        uint8_t finished = receiveDone();
         if(finished == 1) {
-            break;
+            if(current_ship_number == 0) {
+            sendDone(1);
+            instruction_set(LOSE);
+            } else {
+            instruction_set(WIN);
+            }
+
         }
-        led_set(LED1, 1);
-        missile_shoot();
-        display_clear();
+
     }
-    if(current_ship_number == 0) {
-        sendDone(1);
-        instruction_set(LOSE);
-    } else {
-        instruction_set(WIN);
+   
     }
 }

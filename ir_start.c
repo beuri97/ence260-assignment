@@ -30,18 +30,8 @@ uint8_t receiveDone(void)
     if (ir_uart_read_ready_p()){
         doneChar = ir_uart_getc();
     }
-    uint8_t done = (int)(doneChar);
+    uint8_t done = (uint8_t)(doneChar);
     return done;
-}
-
-/**
- * @brief get the order position for the player
- * 
- * @return the order position for the player
-*/
-uint8_t getOrder(void)
-{
-    return turnOrder;
 }
 
 /**
@@ -54,17 +44,13 @@ uint8_t ir_start_init(void)
     ir_uart_init();
     uint8_t enemyStatus = 0;
     enemyStatus = receiveDone();
+
     if (enemyStatus != 0) {
         turnOrder = 2;
-        sendDone(turnOrder);
+        sendDone(1);
     } else {
         turnOrder = 1;
         sendDone(turnOrder);
     }
-    while(enemyStatus == 0){
-        enemyStatus = receiveDone();
-    }
-    sendDone(turnOrder);
-
     return turnOrder;
 }

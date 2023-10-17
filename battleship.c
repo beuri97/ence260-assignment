@@ -26,9 +26,10 @@ void store_ship(uint8_t index, object_t ship)
 void show_ships(void)
 {
     for(uint8_t i = 0; i < TOTAL_NUM_SHIP; i++) {
-
         object_t ship = ships[i];
-        draw_object(&ship, 1);
+        if(!ship.destroy) {
+            draw_object(&ship, 1);
+        }
     }
 }
 
@@ -43,13 +44,10 @@ void show_ships(void)
 bool check_ship_hit(uint8_t missile_col, uint8_t missile_row)
 {
     for(uint8_t i = 0; i < TOTAL_NUM_SHIP; i++) {
-        object_t ship = ships[i];
-        for(uint8_t led = 0; led < ship.size; led++) {
-            if(missile_col == (ship.col + led) && (missile_row == ship.row)) {
-                draw_object(&ship, 0);
-                ship.destroy = true;
-                return true;
-            }
+        if(missile_col == ships[i].col && (BIT(missile_row) & (0xF | BIT(ships[i].size) << ships[i].row))) {
+            draw_object(&(ships[i]), 0);
+            ships[i].destroy = true;
+            return true;
         }
     }
     return false;
