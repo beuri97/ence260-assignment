@@ -20,11 +20,6 @@
 
 void missile_shoot(object_t* missile)
 {
-    // object_t* missile = malloc(sizeof(object_t));
-    // missile_init(missile);
-    // draw_object(missile, 1);
-    // object_control(missile);
-
     uint8_t send = ((missile->col) << 4) | (missile->row);
 
     sendDone(send);

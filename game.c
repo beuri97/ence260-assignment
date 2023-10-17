@@ -14,7 +14,6 @@ int main (void)
     system_init ();
     led_interface_init();
     control_interface_init();
-    uint8_t current_ship_number = 3;
     bool finish = false;
     uint8_t turn = 0;
 
@@ -49,8 +48,8 @@ int main (void)
 
         while(!get) {
             
-            object_show();
             get = receiveDone();
+            object_show();
             if(get) {
                 row = get & 0xF;
                 col = get >> 4;

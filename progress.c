@@ -64,10 +64,10 @@ bool collision_check(uint8_t col, uint8_t row)
  */
 void object_control(object_t* object)
 {
-   
     bool done = 0;
     while(!done){
-        object_show();
+        pacer_wait();
+        display_update();
         done = positioning(object);
     }
     
