@@ -38,6 +38,7 @@ int main (void)
     }
     while(current_ship_number > 0) {
         show_ships();
+        instruction_set(OPPONENT_TURN);
         led_set(LED1, 0);
         uint8_t col = 0;
         uint8_t row = 0;
