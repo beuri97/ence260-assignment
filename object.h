@@ -1,5 +1,5 @@
 /** @file   object.h
-    @author HanByeol Yang(hya62)
+    @author HanByeol Yang(hya62) - Group 509
     @date   18 October 2023
     @brief  game object definitions are here.
 */

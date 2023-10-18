@@ -1,5 +1,5 @@
 /** @file   ir_start.h
-    @author Blake W. Manson(bma206)
+    @author Blake W. Manson(bma206) - Group 509
     @date   18 October 2023
     @brief  handles IR transmit to transmit data to opponent.
 */

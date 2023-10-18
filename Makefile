@@ -1,6 +1,5 @@
 # File: Makefile
-# Author: HanByeol Yang(hya62)
-# Author: Blake W. Manson(bma206)
+# Author: HanByeol Yang(hya62) Blake W. Manson(bma206) - Group 509
 # Date 18 October 2023
 # Descr:  Makefile for game - skeleton of this file is originally made by M. P. Hayes
 
