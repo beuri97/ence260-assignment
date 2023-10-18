@@ -22,6 +22,7 @@ int main (void)
     control_interface_init();
     bool finish_setup = false;
     uint8_t turn = 0;
+    // initiallise veriable to 0xFF - use 0 for declare game need to be continue
     uint8_t game_over = 0xFF;
     
     while(1) {
@@ -44,6 +45,7 @@ int main (void)
             free_missile(missile); // free heap
             turn++;
 
+            // reset veriable to 0xFF - use 0 for declare game need to be continue
             game_over = 0xFF;
             // check opponent's defeat declaration
             while(game_over == 0xFF) {
