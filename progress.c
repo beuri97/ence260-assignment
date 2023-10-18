@@ -4,7 +4,9 @@
     @brief  handles LED1(Blue LED) and led-Matrix
 */
 #include <avr/io.h>
+#include <stdlib.h>
 
+#include "missile.h"
 #include "battleship.h"
 #include "system.h"
 #include "led.h"
@@ -16,6 +18,40 @@
 
 #define PACER_RATE 500
 #define MESSAGE_RATE 25
+
+void free_missile(object_t* missile) {
+
+    free(missile);
+}
+
+object_t* missile_control(void) {
+    object_t* missile = missile_init();
+    draw_object(missile, 1);
+    object_control(missile);
+    return missile;
+}
+
+
+bool missile_impact(uint8_t (*receive)(void)) {
+    /* Since it is possible that result of row and column can be both 0
+       Thus we cannot initialise get variable with 0 */
+    uint8_t get = 0xFF;
+    uint8_t col = 0;
+    uint8_t row = 0;
+    show_ships();
+    while(get == 0xFF) {
+        pacer_wait();
+        display_update();
+        get = receive();
+    }
+
+    row = get & 0xF;
+    col = get >> 4;
+    display_clear();
+    display_update();
+
+    return check_ship_hit(col, row);
+}
 
 
 bool check_game_over(void) {
@@ -66,6 +102,7 @@ void object_control(object_t* object)
 {
     bool done = 0;
     while(!done){
+
         pacer_wait();
         display_update();
         done = positioning(object);
@@ -215,8 +252,8 @@ void instruction_set(message_t message)
             uint16_t count = 0;
             led1_on();
             while(TCNT1 < 14062){
+                PORTC ^= BIT(2);
                 if(++count  == 2344){
-                    PORTC ^= BIT(2);
                     count = 0;
                 }
             }

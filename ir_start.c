@@ -26,11 +26,11 @@ void sendDone(char order)
 */
 uint8_t receiveDone(void)
 {
-    char doneChar = 0;
+    uint8_t done = 0xFF;
     if (ir_uart_read_ready_p()){
-        doneChar = ir_uart_getc();
+        done = ir_uart_getc();
     }
-    uint8_t done = (uint8_t)(doneChar);
+
     return done;
 }
 
@@ -42,10 +42,9 @@ uint8_t receiveDone(void)
 uint8_t ir_start_init(void)
 {
     ir_uart_init();
-    uint8_t enemyStatus = 0;
-    enemyStatus = receiveDone();
+    uint8_t enemyStatus = receiveDone();
 
-    if (enemyStatus != 0) {
+    if (enemyStatus != 0xFF) {
         turnOrder = 2;
         sendDone(1);
     } else {

@@ -22,6 +22,12 @@ typedef enum {
 } message_t;
 
 
+void free_missile(object_t* missile);
+
+object_t* missile_control(void);
+
+bool missile_impact(uint8_t (*receive)(void));
+
 bool check_game_over(void);
 
 void object_show(void);
