@@ -46,7 +46,7 @@ object_t* missile_control(void);
  * @brief Show player's ship position, standing by until opponent missile information is sent to player
  * and check one of player's ship is hit.
  * 
- * @param receive Pointer of receive function at ir_start module.
+ * @param receive Address value of receive function at ir_start module.
  * @return true if one of player ship is hit by opponent's missile or
  * @return false if none of player's ships is been hit.
  */

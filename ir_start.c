@@ -8,9 +8,9 @@
 #include "ir_start.h"
 
 /**
- * @brief send the turn order to the other player
+ * @brief send transmit data to other player
  * 
- * @param order the turn position for the player
+ * @param order 8 bits of data to transmit to other player
 */
 void send(char order)
 {
@@ -18,9 +18,9 @@ void send(char order)
 }
 
 /**
- * @brief receive the enemy player's turn order
+ * @brief receive the opponent transmitted value 
  * 
- * @return returns the value of the enemy's turn position
+ * @return 8 bits transmitted value from others
 */
 uint8_t receive(void)
 {
