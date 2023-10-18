@@ -1,5 +1,5 @@
 /** @file   control.h
-    @author HanByeol Yang(hya62), Blake W. Manson(bwm206)
+    @author HanByeol Yang(hya62), Blake W. Manson(bma206)
     @date   18 October 2023
     @brief  handles navswitch, manages data processing related to game progress.
 */

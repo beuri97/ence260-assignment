@@ -1,5 +1,5 @@
 /** @file   game.c
-    @author HanByeol Yang(hya62), Blake W. Manson(bwm206)
+    @author HanByeol Yang(hya62), Blake W. Manson(bma206)
     @date   18 October 2023
     @brief  main file - program is start from this file
 */
