@@ -1,4 +1,11 @@
+/** @file   ir_start.h
+    @author Blake W. Manson(bwm206)
+    @date   18 October 2023
+    @brief  handles IR transmit to transmit data to opponent.
+*/
+
 #include "ir_uart.h"
+#include "ir_start.h"
 
 /**
  * @brief send the turn order to the other player

@@ -1,3 +1,9 @@
+/** @file   ir_start.h
+    @author Blake W. Manson(bwm206)
+    @date   18 October 2023
+    @brief  handles IR transmit to transmit data to opponent.
+*/
+
 #ifndef IR_START_H
 #define IR_START_H
 

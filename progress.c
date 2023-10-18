@@ -1,12 +1,12 @@
-/** @file   show.c
+/** @file   progress.c
     @author HanByeol Yang(hya62), Blake W. Manson(bwm206)
-    @date   15 October 2023
-    @brief  handles LED1(Blue LED) and led-Matrix
+    @date   18 October 2023
+    @brief  handles LED1 and led-Matrix
 */
 #include <stdlib.h>
 
 #include "missile.h"
-#include "battleship.h"
+#include "control.h"
 #include "system.h"
 #include "led.h"
 #include "pacer.h"
@@ -24,8 +24,8 @@
  * 
  * @param missile missile to be removed
 */
-void free_missile(object_t* missile) {
-
+void free_missile(object_t* missile) 
+{
     free(missile);
 }
 
@@ -34,25 +34,44 @@ void free_missile(object_t* missile) {
  * 
  * @return pointer to missile after being controlled
 */
-object_t* missile_control(void) {
+object_t* missile_control(void) 
+{
     object_t* missile = missile_init();
     draw_object(missile, 1);
     object_control(missile);
+
+    display_clear();
+    display_update();
+    
     return missile;
 }
 
 
-bool missile_impact(uint8_t (*receive)(void)) {
-    /* Since it is possible that result of row and column can be both 0
-       Thus we cannot initialise get variable with 0 */
-    uint8_t get = 0xFF;
+/**
+ * @brief Show player's ship position, standing by until opponent missile information is sent to player
+ * and check one of player's ship is hit.
+ * 
+ * @param receive Pointer of receive function at ir_start module.
+ * @return true if one of player ship is hit by opponent's missile,
+ * @return false if none of player's ships is been hit.
+ */
+bool missile_impact(uint8_t (*receive)(void)) 
+{
+    
+    /* 'get' variable will assign data from opponent that contains 
+       combination of opponent's missle row and column data into 8bits.
+       It is possible that result of row and column can be both 0.
+       Thus we cannot initialise 'get' variable with 0 */
+
+    uint8_t get = 0xFF; // there are no rows larger than or equal to 7 and no columns lager than or equal to 5
     uint8_t col = 0;
     uint8_t row = 0;
     show_ships();
+
     while(get == 0xFF) {
         pacer_wait();
         display_update();
-        get = receive();
+        get = receive(); // try to receive opponent missile row/column
     }
 
     row = get & 0xF;
@@ -63,17 +82,15 @@ bool missile_impact(uint8_t (*receive)(void)) {
     return check_ship_hit(col, row);
 }
 
-
+/**
+ * @brief connect check_all_ship_destroyed function at control.c
+ * 
+ * @return true if check_all_ship_destroyed function returns true or 
+ * @return false if check_all_ship_destroyed function returns false
+ */
 bool check_game_over(void) {
 
     return check_all_ship_destroyed();
-}
-
-void object_show(void) {
-
-    pacer_wait();
-    display_update();
-
 }
 
 /**
@@ -117,15 +134,12 @@ void object_control(object_t* object)
         display_update();
         done = positioning(object);
     }
-    
-    display_clear();
-    display_update();
 }
 
 /**
  * @brief draw or remove ship into led-matrix
  * 
- * @param ship structure of ship that has start row, col and size information
+ * @param object structure of object that has start row, col and size information
  * @param val led status value 1 for led on 0 for other
 */
 void draw_object(object_t* object, bool val)
@@ -140,8 +154,8 @@ void draw_object(object_t* object, bool val)
  * 
  * @param ship ship object informations to be initialise
  */
-void ship_initialise_start_point(object_t* ship) {
-
+void ship_initialise_start_point(object_t* ship) 
+{
     while(1) {
         if((ship->row + ship->size >= LEDMAT_ROWS_NUM))
         {

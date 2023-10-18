@@ -1,8 +1,14 @@
+/** @file   game.c
+    @author HanByeol Yang(hya62), Blake W. Manson(bwm206)
+    @date   18 October 2023
+    @brief  main file - program is start from this file
+*/
+
+
 #include "system.h"
 #include "ir_start.h"
-#include "../fonts/font5x7_1.h"
 #include "object.h"
-#include "battleship.h"
+#include "control.h"
 #include "progress.h"
 
 /**
@@ -16,10 +22,11 @@ int main (void)
     control_interface_init();
     bool finish_setup = false;
     uint8_t turn = 0;
-    uint8_t game_over = 0;
+    uint8_t game_over;
     
     while(1) {
     
+        // game setup
         if(!finish_setup) {
             instruction_set(WELCOME);
             ship_init();
@@ -27,39 +34,50 @@ int main (void)
             instruction_set(CHOOSE_ORDER);
             turn = choose_order();
         }
-
+        
+        // player shoot missile
         if(turn == 1) {
             instruction_set(PLAYER_TURN);
             object_t* missile = missile_control();
-            uint8_t coordinates = ((missile->col) << 4) | (missile->row);
+            uint8_t coordinates = ((missile->col) << 4) | (missile->row);   // combine row and col data into 8 bits
             send(coordinates);
-            free_missile(missile);
+            free_missile(missile); // free heap
             turn++;
-            game_over = receive();
+
+            // check opponent's defeat declaration
+            game_over = 0xFF;
             while(game_over == 0xFF) {
                 game_over = receive();
             }
 
+        // player standby for opponent's missile impact
         } else if (turn == 2){
             instruction_set(OPPONENT_TURN);
             missile_impact(&receive);   
-            turn--;  
+            turn--;
+
+            // check if player loose all ship and if so, declare player's defeat to 
             if(check_game_over()) {
+                // player is defeated
                 game_over = 1;
             } else {
+                // game continue
                 game_over = 0;
             }
             send(game_over);
         }
 
+        // game over
         if(game_over == 1) {
             if(check_game_over()) {
                 instruction_set(LOSE);
-                finish_setup = false;
             } else {
                 instruction_set(WIN);
-                finish_setup = false;
             }
+
+            finish_setup = false;
+            turn = 0;
         }
+
     }
 }

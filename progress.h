@@ -1,6 +1,6 @@
-/** @file   show.h
+/** @file   progress.h
     @author HanByeol Yang(hya62), Blake W. Manson(bwm206)
-    @date   15 October 2023
+    @date   18 October 2023
     @brief  handles LED1 and led-Matrix
 */
 #ifndef PROGRESS_H
@@ -28,15 +28,37 @@ typedef enum {
 */
 uint8_t choose_order(void);
 
+/**
+ * @brief free missile object from memory
+ * 
+ * @param missile missile to be removed
+*/
 void free_missile(object_t* missile);
 
+/**
+ * @brief position the missile
+ * 
+ * @return pointer to missile after being controlled
+*/
 object_t* missile_control(void);
 
+/**
+ * @brief Show player's ship position, standing by until opponent missile information is sent to player
+ * and check one of player's ship is hit.
+ * 
+ * @param receive Pointer of receive function at ir_start module.
+ * @return true if one of player ship is hit by opponent's missile or
+ * @return false if none of player's ships is been hit.
+ */
 bool missile_impact(uint8_t (*receive)(void));
 
+/**
+ * @brief connect check_all_ship_destroyed function at control.c
+ * 
+ * @return true if check_all_ship_destroyed function returns true or 
+ * @return false if check_all_ship_destroyed function returns false
+ */
 bool check_game_over(void);
-
-void object_show(void);
 
 /**
  * @brief execute row movement of object
@@ -65,7 +87,7 @@ void object_control(object_t* object);
 
 /**
  * @brief draw or remove ship into led-matriex
- * @param ship structure of ship that has start row, col and size information
+ * @param object structure of object that has start row, col and size information
  * @param val led status value 1 for led on 0 for other
 */
 void draw_object(object_t* object, bool val);

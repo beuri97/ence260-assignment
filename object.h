@@ -1,3 +1,9 @@
+/** @file   object.h
+    @author HanByeol Yang(hya62)
+    @date   18 October 2023
+    @brief  game object definitions are here.
+*/
+
 #ifndef OBJECT_H
 #define OBJECT_H
 
