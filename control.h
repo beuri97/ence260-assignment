@@ -1,3 +1,9 @@
+/** @file   control.h
+    @author HanByeol Yang(hya62), Blake W. Manson(bwm206)
+    @date   18 October 2023
+    @brief  handles navswitch, manages data processing related to game progress.
+*/
+
 #ifndef BATTLESHIP_H
 #define BATTLESHIP_H
 
@@ -9,7 +15,7 @@
 /**
  * @brief check if all ships have been destroyed
  * 
- * @return true if they have ||
+ * @return true if they have,
  * @return false otherwise
 */
 bool check_all_ship_destroyed(void);
@@ -29,7 +35,7 @@ void show_ships(void);
  * 
  * @param missile_col the column location of the missile fired
  * @param missile_row the row location of the missile fired
- * @return true if a ship is hit ||
+ * @return true if a ship is hit,
  * @return false otherwise
 */
 bool check_ship_hit(uint8_t missile_col, uint8_t missile_row);
@@ -47,7 +53,7 @@ uint8_t order_positioning(uint8_t curr_position);
  * other ship is blocking its way.
  * 
  * @param ship structure of ship that has row, col, and its size
- * @return true when NAVSWITCH_PUSH push event is happen - represent ship position init is finish || 
+ * @return true when NAVSWITCH_PUSH push event is happen - represent ship position init is finish,
  * @return false otherwise
 */
 bool positioning(object_t* object);
@@ -55,7 +61,7 @@ bool positioning(object_t* object);
 /**
  * @brief Check if any navswitch buttons is pushed
  * 
- * @return true if has been pushed ||
+ * @return true if has been pushed,
  * @return false otherwise
 */
 bool any_push(void);
