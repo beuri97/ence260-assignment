@@ -22,7 +22,7 @@ int main (void)
     control_interface_init();
     bool finish_setup = false;
     uint8_t turn = 0;
-    uint8_t game_over;
+    uint8_t game_over = 0;
     
     while(1) {
     
