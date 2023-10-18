@@ -18,9 +18,15 @@ typedef enum {
     OPPONENT_TURN,
     WIN,
     LOSE,
-    BOOM
+    CHOOSE_ORDER
 } message_t;
 
+/**
+ * @brief choose the order of play for the players
+ * 
+ * @return position, either 1 or 2
+*/
+uint8_t choose_order(void);
 
 void free_missile(object_t* missile);
 

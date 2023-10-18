@@ -11,7 +11,12 @@
 */
 static object_t ships[TOTAL_NUM_SHIP];
 
-
+/**
+ * @brief check if all ships have been destroyed
+ * 
+ * @return true if they have ||
+ * @return false otherwise
+*/
 bool check_all_ship_destroyed(void) 
 {
     for(int8_t i=0; i< TOTAL_NUM_SHIP; i++) {
@@ -63,6 +68,29 @@ bool check_ship_hit(uint8_t missile_col, uint8_t missile_row)
         }
     }
     return false;
+}
+
+
+/**
+ * @brief change order of positions based on naswitch input
+ * 
+ * @param curr_position the current position of the player
+ * @return the new position of the player
+*/
+uint8_t order_positioning(uint8_t curr_position)
+{
+    uint8_t position = curr_position;
+    navswitch_update();
+    if(navswitch_push_event_p(NAVSWITCH_PUSH)) {
+        position = 0;
+    
+    } else if(navswitch_push_event_p(NAVSWITCH_SOUTH)) {
+        position = 1;
+
+    } else if(navswitch_push_event_p(NAVSWITCH_NORTH)) {
+        position = 2;
+    }
+    return position;
 }
 
 /**
@@ -131,7 +159,10 @@ bool positioning(object_t* object)
  }
 
 /**
- * @brief Check if any navswitch buttons is pushed'
+ * @brief Check if any navswitch buttons is pushed
+ * 
+ * @return true if has been pushed ||
+ * @return false otherwise
 */
 bool any_push(void)
 {
@@ -140,6 +171,9 @@ bool any_push(void)
             navswitch_push_event_p(NAVSWITCH_EAST) || navswitch_push_event_p(NAVSWITCH_WEST);
 }
 
+/**
+ * @brief initialise navswitch and button
+*/
 void control_interface_init(void)
 {
     navswitch_init();

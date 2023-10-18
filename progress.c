@@ -3,7 +3,6 @@
     @date   15 October 2023
     @brief  handles LED1(Blue LED) and led-Matrix
 */
-#include <avr/io.h>
 #include <stdlib.h>
 
 #include "missile.h"
@@ -19,11 +18,22 @@
 #define PACER_RATE 500
 #define MESSAGE_RATE 25
 
+
+/**
+ * @brief free missile object from memory
+ * 
+ * @param missile missile to be removed
+*/
 void free_missile(object_t* missile) {
 
     free(missile);
 }
 
+/**
+ * @brief position the missile
+ * 
+ * @return pointer to missile after being controlled
+*/
 object_t* missile_control(void) {
     object_t* missile = missile_init();
     draw_object(missile, 1);
@@ -108,6 +118,8 @@ void object_control(object_t* object)
         done = positioning(object);
     }
     
+    display_clear();
+    display_update();
 }
 
 /**
@@ -171,6 +183,37 @@ void ship_init(void)
     led1_off();
 }
 
+
+/**
+ * @brief choose the order of play for the players
+ * 
+ * @return position, either 1 or 2
+*/
+uint8_t choose_order(void)
+{
+    uint8_t position = 1;
+    char* position_text = "1\0";
+
+    uint8_t curr_position = 1;
+    while(curr_position != 0) {
+        pacer_wait();
+        if(curr_position == 1) {
+            position_text = "1\0";
+        } else if (curr_position == 2) {
+               position_text = "2\0";
+        }
+        tinygl_text(position_text);
+        tinygl_update();
+        position = curr_position;
+        curr_position = order_positioning(curr_position);
+
+    }
+
+    tinygl_clear();
+    return position;
+}
+
+
 /**
  * @brief trigger function to setup to show message on led-matrix
  * 
@@ -178,12 +221,13 @@ void ship_init(void)
 */
 void instruction_set(message_t message)
 {
+
+    bool stop = false;
   
     switch (message)
     {
         case WELCOME:
             tinygl_text("Push any button to start!");
-            bool stop = false;
             while(!stop) {
                 pacer_wait();
                 tinygl_update();
@@ -223,8 +267,8 @@ void instruction_set(message_t message)
         case WIN:
             tinygl_text("You win\0");
 
-            //loop will execute arround 5 seconds
-            while (1) {
+            //loop will execute around 5 seconds
+            while (!stop) {
                 pacer_wait();
                 tinygl_update();
                 stop = any_push();
@@ -237,7 +281,7 @@ void instruction_set(message_t message)
             led1_off();
             tinygl_text("You Lose!\0");
 
-            while (1) {
+            while (!stop) {
                 pacer_wait();
                 tinygl_update();
                 stop = any_push();
@@ -247,16 +291,18 @@ void instruction_set(message_t message)
             display_update();
             break;
 
-        case BOOM:
-            TCNT1 = 0;
-            uint16_t count = 0;
-            led1_on();
-            while(TCNT1 < 14062){
-                PORTC ^= BIT(2);
-                if(++count  == 2344){
-                    count = 0;
-                }
+        case CHOOSE_ORDER:
+            led1_off();
+            tinygl_text("Choose order\0");
+
+            while (!stop) {
+                pacer_wait();
+                tinygl_update();
+                stop = any_push();
             }
+
+            display_clear();
+            display_update();
             break;
 
     }

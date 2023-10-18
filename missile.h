@@ -3,7 +3,11 @@
 
 #include "object.h"
 
+/**
+ * @brief create missile object to shoot
+ * 
+ * @return pointer to memory for missile object
+*/
 object_t* missile_init(void);
-void missile_shoot(object_t* missile);
 
 #endif //MISSILE_H

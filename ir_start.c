@@ -1,20 +1,11 @@
-#include "system.h"
-#include "pacer.h"
 #include "ir_uart.h"
-
-#define PACER_RATE 500
-
-/**
- * Send and reveive setup state of each player, and set turn order of the game
-*/
-static uint8_t turnOrder = 1;
 
 /**
  * @brief send the turn order to the other player
  * 
  * @param order the turn position for the player
 */
-void sendDone(char order)
+void send(char order)
 {
     ir_uart_putc(order);
 }
@@ -24,7 +15,7 @@ void sendDone(char order)
  * 
  * @return returns the value of the enemy's turn position
 */
-uint8_t receiveDone(void)
+uint8_t receive(void)
 {
     uint8_t done = 0xFF;
     if (ir_uart_read_ready_p()){
@@ -39,17 +30,7 @@ uint8_t receiveDone(void)
  * 
  * @return the turn position for the player
 */
-uint8_t ir_start_init(void)
+void ir_init(void)
 {
     ir_uart_init();
-    uint8_t enemyStatus = receiveDone();
-
-    if (enemyStatus != 0xFF) {
-        turnOrder = 2;
-        sendDone(1);
-    } else {
-        turnOrder = 1;
-        sendDone(turnOrder);
-    }
-    return turnOrder;
 }
